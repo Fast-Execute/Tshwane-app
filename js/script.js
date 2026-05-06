@@ -1,6 +1,7 @@
 // ============================================
 // Tshwane Bus Fare Points Refill App
 // JavaScript Functionality
+// Points Pricing: 1 Rand = 1 Point (Minimum R20)
 // ============================================
 
 // Initialize on page load
@@ -34,6 +35,7 @@ function setupPointsRefillForm() {
             if (customAmount) {
                 customAmount.value = '';
             }
+            // Points = Amount (1:1 ratio)
             updateAmountDisplay(this.value, this.dataset.points);
         });
     });
@@ -45,8 +47,13 @@ function setupPointsRefillForm() {
             radioButtons.forEach(radio => radio.checked = false);
             
             if (this.value) {
-                const customPoints = Math.floor(this.value * 10); // 1 point = R 0.10
-                updateAmountDisplay(this.value, customPoints);
+                // Validate minimum amount (R20)
+                if (parseInt(this.value) < 20) {
+                    this.value = 20;
+                }
+                // Points = Amount (1:1 ratio)
+                const points = Math.floor(this.value);
+                updateAmountDisplay(this.value, points);
             }
         });
     }
@@ -326,7 +333,8 @@ function logTransaction(data) {
         amount: data.amount,
         points: data.points,
         method: data.method,
-        status: 'pending'
+        status: 'pending',
+        conversionRate: '1 Rand = 1 Point'
     });
 }
 
