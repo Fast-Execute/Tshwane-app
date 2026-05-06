@@ -1,0 +1,413 @@
+/* ============================================
+   Tshwane Bus Fare Points Refill App
+   Color Theme: Green (#27ae60)
+   ============================================ */
+
+/* Color Variables */
+:root {
+    --green-primary: #27ae60;
+    --green-dark: #1e8449;
+    --green-light: #d5f4e6;
+    --text-dark: #2c3e50;
+    --text-muted: #7f8c8d;
+    --light-bg: #f8f9fa;
+    --border-color: #ecf0f1;
+}
+
+/* ============================================
+   Global Styles
+   ============================================ */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+    background-color: #f8f9fa;
+}
+
+a {
+    color: var(--green-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--green-dark);
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+.bg-green-primary {
+    background-color: var(--green-primary) !important;
+}
+
+.bg-green-light {
+    background-color: var(--green-light) !important;
+}
+
+.text-green-primary {
+    color: var(--green-primary) !important;
+}
+
+.btn-green {
+    background-color: var(--green-primary);
+    border-color: var(--green-primary);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-green:hover {
+    background-color: var(--green-dark);
+    border-color: var(--green-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.btn-green:focus,
+.btn-green:active {
+    background-color: var(--green-dark);
+    border-color: var(--green-dark);
+    box-shadow: 0 0 0 0.25rem rgba(39, 174, 96, 0.25);
+}
+
+.btn-outline-green {
+    color: var(--green-primary);
+    border-color: var(--green-primary);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-green:hover {
+    background-color: var(--green-primary);
+    border-color: var(--green-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-outline-green:focus,
+.btn-outline-green:active {
+    background-color: var(--green-primary);
+    border-color: var(--green-primary);
+    color: white;
+    box-shadow: 0 0 0 0.25rem rgba(39, 174, 96, 0.25);
+}
+
+/* ============================================
+   Navigation Bar
+   ============================================ */
+
+.navbar {
+    box-shadow: 0 2px 8px rgba(39, 174, 96, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+.navbar-nav .nav-link {
+    margin: 0 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #e8f8f5 !important;
+    border-bottom: 2px solid white;
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+
+.hero-section {
+    padding: 60px 0;
+    border-bottom: 3px solid var(--green-primary);
+}
+
+.hero-section h1 {
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+}
+
+/* ============================================
+   Cards
+   ============================================ */
+
+.card {
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(39, 174, 96, 0.15) !important;
+}
+
+.card-header {
+    border-bottom: 2px solid var(--green-primary);
+    font-weight: 600;
+}
+
+.card-header.bg-green-primary {
+    background-color: var(--green-primary) !important;
+    border-bottom: none;
+}
+
+/* ============================================
+   Forms
+   ============================================ */
+
+.form-control,
+.form-select {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--green-primary);
+    box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.15);
+}
+
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    margin-top: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: var(--green-primary);
+    border-color: var(--green-primary);
+}
+
+.form-check-input:focus {
+    border-color: var(--green-primary);
+    box-shadow: 0 0 0 0.25rem rgba(39, 174, 96, 0.25);
+}
+
+.form-label {
+    color: var(--text-dark);
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.input-group-text {
+    border: 1px solid var(--border-color);
+    font-weight: 600;
+}
+
+/* ============================================
+   Progress Bars
+   ============================================ */
+
+.progress {
+    height: 8px;
+    background-color: var(--border-color);
+    border-radius: 10px;
+}
+
+.progress-bar {
+    background-color: var(--green-primary);
+    border-radius: 10px;
+}
+
+/* ============================================
+   Badges
+   ============================================ */
+
+.badge {
+    padding: 6px 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.badge.bg-success {
+    background-color: var(--green-primary) !important;
+}
+
+/* ============================================
+   Tables
+   ============================================ */
+
+.table {
+    color: var(--text-dark);
+}
+
+.table thead {
+    background-color: #f0f9f7;
+    font-weight: 600;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--green-light);
+}
+
+/* ============================================
+   Alerts
+   ============================================ */
+
+.alert-light {
+    background-color: #f0f9f7;
+    border-left: 4px solid var(--green-primary);
+}
+
+.alert-success {
+    background-color: #d5f4e6;
+    border: 1px solid var(--green-primary);
+    color: var(--green-dark);
+}
+
+/* ============================================
+   Modals
+   ============================================ */
+
+.modal-header {
+    border-bottom: 2px solid var(--green-primary);
+}
+
+.modal-content {
+    border: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+
+footer {
+    background-color: var(--green-primary);
+    border-top: 3px solid var(--green-dark);
+}
+
+footer a {
+    color: #e8f8f5;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: white;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 0;
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .navbar-nav .nav-link {
+        margin: 8px 0;
+        border-bottom: none !important;
+    }
+
+    .card {
+        margin-bottom: 15px;
+    }
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.navbar {
+    animation: slideInDown 0.5s ease;
+}
+
+.card {
+    animation: fadeIn 0.6s ease;
+}
+
+/* ============================================
+   Custom Cursor
+   ============================================ */
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ============================================
+   Scrollbar Styling
+   ============================================ */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--green-primary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--green-dark);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+    body {
+        background-color: white;
+    }
+
+    .navbar,
+    footer {
+        display: none;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid var(--border-color);
+    }
+}

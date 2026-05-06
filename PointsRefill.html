@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refill Points - Tshwane Bus Fare Points</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-green-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-bus-front"></i> Tshwane Bus Points
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="PointsRefill.html">Refill Points</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="bg-light min-vh-100 py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Header -->
+                    <div class="mb-5 text-center">
+                        <h1 class="text-green-primary fw-bold mb-2">Refill Your Bus Points</h1>
+                        <p class="text-muted">Choose your refill amount and complete payment securely.</p>
+                    </div>
+
+                    <!-- Current Balance Card -->
+                    <div class="card border-0 shadow-sm mb-5 bg-green-light">
+                        <div class="card-body text-center py-4">
+                            <p class="text-muted mb-2">Current Balance</p>
+                            <h2 class="text-green-primary fw-bold mb-0">2,450 Points</h2>
+                            <small class="text-muted">Updated just now</small>
+                        </div>
+                    </div>
+
+                    <!-- Refill Steps -->
+                    <div class="card border-0 shadow-sm mb-5">
+                        <div class="card-header bg-green-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Refill Amount</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="refillForm">
+                                <!-- Preset Amounts -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold mb-3">Quick Select Amounts</label>
+                                    <div class="row g-2">
+                                        <div class="col-6 col-md-4">
+                                            <input type="radio" name="amount" id="amount50" value="50" class="form-check-input" data-points="500">
+                                            <label for="amount50" class="btn btn-outline-green w-100" style="cursor: pointer;">
+                                                <i class="bi bi-check-circle"></i> R50
+                                            </label>
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <input type="radio" name="amount" id="amount75" value="75" class="form-check-input" data-points="750">
+                                            <label for="amount75" class="btn btn-outline-green w-100" style="cursor: pointer;">
+                                                <i class="bi bi-check-circle"></i> R75
+                                            </label>
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <input type="radio" name="amount" id="amount100" value="100" class="form-check-input" data-points="1000" checked>
+                                            <label for="amount100" class="btn btn-outline-green w-100" style="cursor: pointer;">
+                                                <i class="bi bi-check-circle"></i> R100
+                                            </label>
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <input type="radio" name="amount" id="amount150" value="150" class="form-check-input" data-points="1500">
+                                            <label for="amount150" class="btn btn-outline-green w-100" style="cursor: pointer;">
+                                                <i class="bi bi-check-circle"></i> R150
+                                            </label>
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <input type="radio" name="amount" id="amount200" value="200" class="form-check-input" data-points="2000">
+                                            <label for="amount200" class="btn btn-outline-green w-100" style="cursor: pointer;">
+                                                <i class="bi bi-check-circle"></i> R200
+                                            </label>
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <input type="radio" name="amount" id="amount500" value="500" class="form-check-input" data-points="5000">
+                                            <label for="amount500" class="btn btn-outline-green w-100" style="cursor: pointer;">
+                                                <i class="bi bi-check-circle"></i> R500
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Custom Amount -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Or Enter Custom Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-green-primary text-white">R</span>
+                                        <input type="number" class="form-control" id="customAmount" placeholder="Enter amount" min="10" max="1000" step="5">
+                                    </div>
+                                    <small class="text-muted d-block mt-2">Minimum: R10 | Maximum: R1000</small>
+                                </div>
+
+                                <!-- Amount Summary -->
+                                <div class="alert alert-light border border-green-primary">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small class="text-muted">Amount to Pay</small>
+                                            <h5 class="text-green-primary fw-bold" id="amountDisplay">R 100.00</h5>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <small class="text-muted">Points to Receive</small>
+                                            <h5 class="text-green-primary fw-bold" id="pointsDisplay">1,000 pts</h5>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="text-center">
+                                        <small class="text-muted">Conversion: <strong>1 point = R 0.10</strong></small>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="card border-0 shadow-sm mb-5">
+                        <div class="card-header bg-green-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-credit-card"></i> Payment Method</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="card" checked>
+                                    <label class="form-check-label w-100 p-3 border rounded cursor-pointer" for="cardPayment">
+                                        <i class="bi bi-credit-card"></i> <strong>Debit/Credit Card</strong>
+                                        <br>
+                                        <small class="text-muted">Visa, Mastercard, American Express</small>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="bankPayment" value="bank">
+                                    <label class="form-check-label w-100 p-3 border rounded cursor-pointer" for="bankPayment">
+                                        <i class="bi bi-bank"></i> <strong>Bank Transfer</strong>
+                                        <br>
+                                        <small class="text-muted">Direct bank payment (EFT)</small>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="mobilePayment" value="mobile">
+                                    <label class="form-check-label w-100 p-3 border rounded cursor-pointer" for="mobilePayment">
+                                        <i class="bi bi-phone"></i> <strong>Mobile Money</strong>
+                                        <br>
+                                        <small class="text-muted">M-Pesa, MTN Money, etc.</small>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Card Details (Hidden by default) -->
+                            <div id="cardDetails" class="mt-4">
+                                <h6 class="text-green-primary fw-bold mb-3">Card Details</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Cardholder Name</label>
+                                    <input type="text" class="form-control" placeholder="John Doe">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Card Number</label>
+                                    <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Expiry Date</label>
+                                        <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">CVV</label>
+                                        <input type="text" class="form-control" placeholder="123" maxlength="3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="card border-0 shadow-sm mb-5">
+                        <div class="card-body">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" checked>
+                                <label class="form-check-label" for="termsCheck">
+                                    I agree to the <a href="#" class="text-green-primary text-decoration-none">Terms & Conditions</a> and <a href="#" class="text-green-primary text-decoration-none">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 mb-5">
+                        <a href="dashboard.html" class="btn btn-outline-green flex-grow-1">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                        <button type="button" class="btn btn-green flex-grow-1" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                            <i class="bi bi-check-circle"></i> Proceed to Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-green-primary text-white border-0">
+                    <h5 class="modal-title"><i class="bi bi-check-circle"></i> Confirm Refill</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-check-circle" style="font-size: 48px; color: #27ae60;"></i>
+                    </div>
+                    <h6 class="text-center mb-3">Please Review Your Order</h6>
+                    <div class="alert alert-light border border-green-primary">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Points to Receive:</span>
+                            <strong class="text-green-primary" id="confirmPoints">1,000 pts</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Amount to Pay:</span>
+                            <strong class="text-green-primary" id="confirmAmount">R 100.00</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Payment Method:</span>
+                            <strong class="text-green-primary" id="confirmMethod">Debit/Credit Card</strong>
+                        </div>
+                    </div>
+                    <p class="text-muted small text-center">This transaction will be processed immediately. You will receive a confirmation email.</p>
+                </div>
+                <div class="modal-footer border-0 gap-2">
+                    <button type="button" class="btn btn-outline-green" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#successModal" data-bs-dismiss="modal">
+                        <i class="bi bi-lock"></i> Complete Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-body text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle" style="font-size: 64px; color: #27ae60;"></i>
+                    </div>
+                    <h4 class="text-green-primary fw-bold mb-2">Refill Successful!</h4>
+                    <p class="text-muted mb-4">Your bus points have been credited to your account.</p>
+                    
+                    <div class="alert alert-light border border-green-primary mb-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Transaction ID</small>
+                                <p class="fw-bold text-green-primary" id="transId">#TRX001235</p>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">New Balance</small>
+                                <p class="fw-bold text-green-primary">3,450 pts</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-muted small mb-4">A confirmation email has been sent to your registered email address.</p>
+                </div>
+                <div class="modal-footer border-0 justify-content-center gap-2">
+                    <a href="dashboard.html" class="btn btn-green">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <a href="index.html" class="btn btn-outline-green">
+                        <i class="bi bi-house"></i> Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-green-primary text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2026 Tshwane Bus Points. All rights reserved. | Licensed under Apache 2.0</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
