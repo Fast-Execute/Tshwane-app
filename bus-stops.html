@@ -3,126 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bus Stops - Tshwane Bus Fare Points</title>
+    <title>Bus Stops Map - Tshwane Bus Fare Points</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-control-geocoder/1.14.0/Control.Geocoder.min.css" />
     <link rel="stylesheet" href="css/style.css">
     <style>
         #busStopsMap {
-            height: 600px;
+            height: 100vh;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .map-container {
+            position: relative;
+            height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            position: absolute;
+            left: 10px;
+            top: 70px;
+            width: 320px;
+            background: white;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 150px);
         }
 
-        .map-control-custom {
-            background-color: white;
-            border: 2px solid #27ae60;
-            border-radius: 6px;
-            padding: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #27ae60;
-            transition: all 0.3s ease;
-        }
-
-        .map-control-custom:hover {
+        .sidebar-header {
             background-color: #27ae60;
             color: white;
-        }
-
-        .bus-stop-info {
-            background-color: white;
             padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #27ae60;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
         }
 
-        .bus-stop-list {
-            max-height: 500px;
+        .search-box {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #27ae60;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .bus-stops-list {
+            flex: 1;
             overflow-y: auto;
+            padding: 8px;
         }
 
         .bus-stop-item {
             padding: 12px;
-            border-bottom: 1px solid #ecf0f1;
+            margin-bottom: 8px;
+            border: 1px solid #ecf0f1;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .bus-stop-item:hover {
+            border-color: #27ae60;
             background-color: #d5f4e6;
-            padding-left: 16px;
         }
 
         .bus-stop-item.active {
             background-color: #27ae60;
             color: white;
-            border-left: 4px solid #1e8449;
+            border-color: #27ae60;
         }
 
-        .marker-custom {
-            background-color: #27ae60;
-            border: 3px solid white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .bus-stop-item.active h6 {
             color: white;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .leaflet-popup-content {
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .leaflet-popup-content-wrapper {
-            border-radius: 8px;
-            border: 2px solid #27ae60;
-        }
-
-        .leaflet-popup-tip {
-            background-color: white;
-            border: 2px solid #27ae60;
-        }
-
-        .search-box {
-            position: relative;
-            z-index: 10;
-            margin-bottom: 20px;
-        }
-
-        .leaflet-control-geocoder {
-            border-radius: 6px !important;
-        }
-
-        .leaflet-control-geocoder a {
-            border-radius: 6px !important;
         }
 
         .route-badge {
             display: inline-block;
-            padding: 4px 8px;
             background-color: #27ae60;
             color: white;
-            border-radius: 4px;
-            font-size: 12px;
-            margin: 2px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+
+        .bus-stop-item.active .route-badge {
+            background-color: white;
+            color: #27ae60;
+        }
+
+        .selected-stop-panel {
+            position: absolute;
+            right: 10px;
+            top: 70px;
+            width: 300px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            padding: 15px;
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+        }
+
+        #selectedStopInfo {
+            min-height: 200px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 10px;
+            z-index: 999;
+            display: flex;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            background-color: #27ae60;
+            color: white;
+            cursor: pointer;
             font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .controls button:hover {
+            background-color: #1e8449;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .controls button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 4px 8px;
         }
 
         @media (max-width: 768px) {
-            #busStopsMap {
-                height: 400px;
-            }
-
-            .row > div {
-                margin-bottom: 20px;
+            .sidebar,
+            .selected-stop-panel {
+                width: calc(100% - 40px);
+                left: 20px !important;
+                right: 20px !important;
+                max-height: 50vh;
             }
         }
     </style>
@@ -130,7 +172,7 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-green-primary">
-        <div class="container">
+        <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="index.html">
                 <i class="bi bi-bus-front"></i> Tshwane Bus Points
             </a>
@@ -149,7 +191,7 @@
                         <a class="nav-link" href="PointsRefill.html">Refill Points</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="bus-stops.html">Find Bus Stops</a>
+                        <a class="nav-link active" href="bus-stops.html">Bus Stops</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.html#contact">Contact</a>
@@ -159,163 +201,64 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="bg-light min-vh-100 py-5">
-        <div class="container-fluid">
-            <!-- Header -->
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="text-center mb-4">
-                        <h1 class="text-green-primary fw-bold mb-2">
-                            <i class="bi bi-geo-alt-fill"></i> Find Bus Stops in Pretoria CBD
-                        </h1>
-                        <p class="text-muted">Locate your nearest bus stop and view available routes</p>
-                    </div>
-                </div>
+    <!-- Map Container -->
+    <div class="map-container">
+        <div id="busStopsMap"></div>
+
+        <!-- Sidebar with Bus Stops List -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="bi bi-bus-front"></i> Bus Stops (<span id="stopCount">12</span>)
             </div>
-
-            <div class="row g-4">
-                <!-- Map Section -->
-                <div class="col-lg-8">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-green-primary text-white">
-                            <h5 class="mb-0"><i class="bi bi-map"></i> Interactive Bus Stop Map</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <!-- Search Box -->
-                            <div class="search-box p-3">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-green-primary text-white">
-                                        <i class="bi bi-search"></i>
-                                    </span>
-                                    <input type="text" class="form-control" id="searchStops" placeholder="Search bus stops by name or route...">
-                                    <button class="btn btn-green" type="button" id="locateMe">
-                                        <i class="bi bi-geo"></i> My Location
-                                    </button>
-                                </div>
-                            </div>
-                            <!-- Map -->
-                            <div id="busStopsMap"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sidebar - Bus Stop List -->
-                <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-green-primary text-white">
-                            <h5 class="mb-0"><i class="bi bi-list-check"></i> Bus Stops (<span id="stopCount">12</span>)</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="bus-stop-list" id="busStopsList">
-                                <!-- Will be populated by JavaScript -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Selected Stop Info -->
-                    <div class="card border-0 shadow-sm mt-4">
-                        <div class="card-header bg-green-primary text-white">
-                            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Stop Details</h5>
-                        </div>
-                        <div class="card-body">
-                            <div id="selectedStopInfo" class="bus-stop-info">
-                                <p class="text-muted text-center mb-0">
-                                    <i class="bi bi-arrow-left"></i> Select a bus stop from the list
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="card border-0 shadow-sm mt-4">
-                        <div class="card-header bg-green-primary text-white">
-                            <h5 class="mb-0"><i class="bi bi-lightning-fill"></i> Quick Actions</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-grid gap-2">
-                                <a href="PointsRefill.html" class="btn btn-green">
-                                    <i class="bi bi-plus-circle"></i> Refill Points
-                                </a>
-                                <a href="dashboard.html" class="btn btn-outline-green">
-                                    <i class="bi bi-speedometer2"></i> View Dashboard
-                                </a>
-                                <button class="btn btn-outline-green" data-bs-toggle="modal" data-bs-target="#directionsModal">
-                                    <i class="bi bi-arrow-up-right-square"></i> Get Directions
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="search-box">
+                <input type="text" id="searchStops" placeholder="Search stops, routes...">
             </div>
+            <div class="bus-stops-list" id="busStopsList"></div>
+        </div>
 
-            <!-- Info Section -->
-            <div class="row mt-5">
-                <div class="col-lg-12">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <h6 class="text-green-primary fw-bold mb-2">
-                                        <i class="bi bi-info-circle"></i> Operating Hours
-                                    </h6>
-                                    <p class="mb-1"><strong>Weekdays:</strong> 05:00 - 22:00</p>
-                                    <p class="mb-1"><strong>Weekends:</strong> 06:00 - 21:00</p>
-                                    <p class="mb-0"><strong>Public Holidays:</strong> 07:00 - 20:00</p>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <h6 class="text-green-primary fw-bold mb-2">
-                                        <i class="bi bi-telephone-fill"></i> Need Help?
-                                    </h6>
-                                    <p class="mb-1"><strong>Customer Support:</strong> 0861 TSHWANE (0861 874 9263)</p>
-                                    <p class="mb-1"><strong>Email:</strong> support@tshwanebuspoints.co.za</p>
-                                    <p class="mb-0"><strong>WhatsApp:</strong> +27 71 123 4567</p>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <h6 class="text-green-primary fw-bold mb-2">
-                                        <i class="bi bi-lightning-charge"></i> Tip
-                                    </h6>
-                                    <p class="mb-0">Use the "My Location" button to find bus stops near you, or search by stop name or route number.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Selected Stop Panel -->
+        <div class="selected-stop-panel">
+            <h6 class="text-green-primary fw-bold mb-3">
+                <i class="bi bi-info-circle"></i> Stop Details
+            </h6>
+            <div id="selectedStopInfo">
+                <p class="text-muted text-center py-4">
+                    <i class="bi bi-cursor" style="font-size: 32px; color: #ccc;"></i>
+                    <br>
+                    Click a bus stop to view details
+                </p>
             </div>
         </div>
-    </main>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="locateMe" title="Find my location">
+                <i class="bi bi-geo"></i> My Location
+            </button>
+        </div>
+    </div>
 
     <!-- Directions Modal -->
     <div class="modal fade" id="directionsModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-green-primary text-white">
-                    <h5 class="modal-title"><i class="bi bi-arrow-up-right-square"></i> Get Directions</h5>
+                <div class="modal-header bg-green-primary text-white border-0">
+                    <h5 class="modal-title">
+                        <i class="bi bi-arrow-up-right-square"></i> Get Directions
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <p class="text-muted mb-3">Open directions in your preferred navigation app:</p>
-                    <div class="d-grid gap-2" id="directionsButtons">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
+                <div class="modal-body py-4">
+                    <p class="text-muted mb-4">Choose your preferred navigation app:</p>
+                    <div class="d-flex flex-column gap-2" id="directionsButtons"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-green-primary text-white py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-0">&copy; 2026 Tshwane Bus Points. All rights reserved. | Licensed under Apache 2.0</p>
-        </div>
-    </footer>
-
-    <!-- Leaflet Map Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-control-geocoder/1.14.0/Control.Geocoder.min.js"></script>
-
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script src="js/bus-stops-map.js"></script>
-    <script src="js/script.js"></script>
 </body>
 </html>

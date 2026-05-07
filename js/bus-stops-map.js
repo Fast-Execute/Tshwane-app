@@ -172,9 +172,7 @@ function initializeMap() {
 function addMarkerToMap(stop) {
     // Create custom icon
     const icon = L.divIcon({
-        html: `<div style="background-color: #27ae60; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
-                <i class="bi bi-bus-front" style="font-size: 16px;"></i>
-              </div>`,
+        html: `<div style="background-color: #27ae60; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"><i class="bi bi-bus-front" style="font-size: 16px;"></i></div>`,
         className: 'bus-marker',
         iconSize: [30, 30],
         iconAnchor: [15, 15]
@@ -215,7 +213,7 @@ function createPopupContent(stop) {
             <p style="margin: 4px 0; font-size: 12px; color: #27ae60;">
                 <i class="bi bi-star-fill"></i> Rating: ${stop.rating}/5.0
             </p>
-            <button class="btn btn-sm btn-green" style="width: 100%; margin-top: 8px; font-size: 12px;" 
+            <button class="btn btn-sm btn-green" style="width: 100%; margin-top: 8px; font-size: 12px; background-color: #27ae60; color: white; border: none; padding: 6px; border-radius: 4px;" 
                     onclick="selectBusStop(${stop.id}); return false;">
                 View Details
             </button>
