@@ -1,9 +1,9 @@
 # Project Status — Tshwane Bus Fare Points Refill App
 
-> **Overall completion: 62%**
+> **Overall completion: 74%**
 >
 > Last reviewed: 17 August 2026  
-> Status: **Interactive demo with accessibility foundation in progress**  
+> Status: **Interactive demo with secure data design in progress**  
 > Next milestone: establish the shared front-end foundation.
 
 ## What the percentage means
@@ -15,13 +15,15 @@ This percentage measures delivery against the agreed first usable product—not 
 | Visual prototype and page structure | 20% | 100% | 20% |
 | Front-end foundation and accessibility | 20% | 60% | 12% |
 | Core dashboard and refill experience | 30% | 100% | 30% |
-| Authentication, payments, and data design | 20% | 0% | 0% |
+| Authentication, payments, and data design | 20% | 60% | 12% |
 | Testing, documentation, and release | 10% | 0% | 0% |
-| **Total** | **100%** |  | **62%** |
+| **Total** | **100%** |  | **74%** |
 
 The dashboard and refill journey now form an interactive browser-only demonstration: refills calculate correctly, validate rider input, update the available balance, and create a transaction record in local storage. It does **not** collect card details, authenticate users, or process real payments.
 
 The shared accessibility foundation is partially complete: keyboard-visible focus, reduced-motion support, skip links, clearer navigation labels, and a consistent bus-stop link are in place. Mobile and assistive-technology verification remains before that work area can be closed.
+
+The secure data design is partially complete: a PostgreSQL schema, row-level access rules, append-only points ledger, data-security standard, and API contract are documented in the database directory. Provider selection, sandbox integration, deployment, and security testing remain before real rider data can be accepted.
 
 ## Active roadmap
 
