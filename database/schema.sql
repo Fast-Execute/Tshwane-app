@@ -121,9 +121,25 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION prevent_auth_subject_change()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $
+BEGIN
+  IF NEW.auth_subject <> OLD.auth_subject THEN
+    RAISE EXCEPTION 'auth_subject cannot be changed';
+  END IF;
+  RETURN NEW;
+END;
+$;
+
 CREATE TRIGGER riders_touch_updated_at
 BEFORE UPDATE ON riders
 FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
+
+CREATE TRIGGER riders_prevent_auth_subject_change
+BEFORE UPDATE ON riders
+FOR EACH ROW EXECUTE FUNCTION prevent_auth_subject_change();
 
 CREATE TRIGGER point_accounts_touch_updated_at
 BEFORE UPDATE ON point_accounts
@@ -144,7 +160,7 @@ CREATE POLICY rider_can_read_self ON riders
 
 CREATE POLICY rider_can_update_safe_profile_fields ON riders
   FOR UPDATE USING (id = app_current_rider_id())
-  WITH CHECK (id = app_current_rider_id() AND auth_subject = OLD.auth_subject);
+  WITH CHECK (id = app_current_rider_id());
 
 CREATE POLICY rider_can_read_own_cards ON transit_cards
   FOR SELECT USING (rider_id = app_current_rider_id());
