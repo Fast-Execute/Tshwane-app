@@ -1,356 +1,157 @@
-// ============================================
-// Tshwane Bus Fare Points Refill App
-// JavaScript Functionality
-// Points Pricing: 1 Rand = 1 Point (Minimum R20)
-// ============================================
+const STORAGE_KEY = "tshwaneBusPointsDemo";
+const POINTS_PER_RAND = 10;
+const DEFAULT_BALANCE = 2450;
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
+document.addEventListener("DOMContentLoaded", () => {
+  initialiseRefillPage();
+  initialiseDashboard();
 });
 
-// Main initialization function
-function initializeApp() {
-    setupPointsRefillForm();
-    setupPaymentMethods();
-    setupNavigation();
-    setupDynamicContent();
+function readAccount() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && Number.isFinite(saved.balance) && Array.isArray(saved.transactions)) return saved;
+  } catch (_) {
+    // Start a fresh demo account if the saved value is invalid.
+  }
+  return { balance: DEFAULT_BALANCE, transactions: [] };
 }
 
-// ============================================
-// Points Refill Form Handling
-// ============================================
+function saveAccount(account) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(account));
+}
 
-function setupPointsRefillForm() {
-    const radioButtons = document.querySelectorAll('input[name="amount"]');
-    const customAmount = document.getElementById('customAmount');
-    const amountDisplay = document.getElementById('amountDisplay');
-    const pointsDisplay = document.getElementById('pointsDisplay');
+function formatPoints(points) {
+  return `${Number(points).toLocaleString("en-ZA")} pts`;
+}
 
-    if (!radioButtons.length) return; // Not on refill page
+function formatCurrency(amount) {
+  return new Intl.NumberFormat("en-ZA", {
+    style: "currency",
+    currency: "ZAR",
+    minimumFractionDigits: 2
+  }).format(amount);
+}
 
-    // Handle preset amount selection
-    radioButtons.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (customAmount) {
-                customAmount.value = '';
-            }
-            // Points = Amount (1:1 ratio)
-            updateAmountDisplay(this.value, this.dataset.points);
-        });
+function initialiseRefillPage() {
+  const form = document.getElementById("refillForm");
+  if (!form) return;
+
+  const customAmount = document.getElementById("customAmount");
+  const amountChoices = [...document.querySelectorAll('input[name="amount"]')];
+  const paymentChoices = [...document.querySelectorAll('input[name="paymentMethod"]')];
+  const modalElement = document.getElementById("confirmModal");
+  const error = document.getElementById("formError");
+  const confirmModal = window.bootstrap ? new bootstrap.Modal(modalElement) : null;
+
+  function selectedAmount() {
+    const custom = Number(customAmount.value);
+    if (customAmount.value !== "" && Number.isFinite(custom)) return custom;
+    return Number(amountChoices.find((choice) => choice.checked)?.value || 0);
+  }
+
+  function selectedMethod() {
+    return paymentChoices.find((choice) => choice.checked)?.value || "";
+  }
+
+  function refreshSummary() {
+    const amount = selectedAmount();
+    const points = Math.round(amount * POINTS_PER_RAND);
+    document.getElementById("amountDisplay").textContent = formatCurrency(amount);
+    document.getElementById("pointsDisplay").textContent = formatPoints(points);
+    document.getElementById("methodDisplay").textContent = selectedMethod();
+  }
+
+  amountChoices.forEach((choice) => choice.addEventListener("change", () => {
+    customAmount.value = "";
+    refreshSummary();
+  }));
+  paymentChoices.forEach((choice) => choice.addEventListener("change", refreshSummary));
+  customAmount.addEventListener("input", () => {
+    if (customAmount.value !== "") amountChoices.forEach((choice) => { choice.checked = false; });
+    refreshSummary();
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const amount = selectedAmount();
+
+    if (!Number.isFinite(amount) || amount < 10 || amount > 1000) {
+      error.textContent = "Please choose an amount between R10 and R1,000.";
+      error.classList.remove("d-none");
+      return;
+    }
+
+    error.classList.add("d-none");
+    document.getElementById("confirmAmount").textContent = formatCurrency(amount);
+    document.getElementById("confirmPoints").textContent = formatPoints(Math.round(amount * POINTS_PER_RAND));
+    document.getElementById("confirmMethod").textContent = selectedMethod();
+    confirmModal?.show();
+  });
+
+  document.getElementById("completeRefill").addEventListener("click", () => {
+    const amount = selectedAmount();
+    const points = Math.round(amount * POINTS_PER_RAND);
+    const account = readAccount();
+    const reference = `DEMO-${Date.now().toString(36).toUpperCase()}`;
+
+    account.balance += points;
+    account.transactions.unshift({
+      reference,
+      amount,
+      points,
+      method: selectedMethod(),
+      date: new Date().toISOString()
     });
+    saveAccount(account);
+    window.location.href = "dashboard.html";
+  });
 
-    // Handle custom amount input
-    if (customAmount) {
-        customAmount.addEventListener('input', function() {
-            // Deselect radio buttons when custom amount is entered
-            radioButtons.forEach(radio => radio.checked = false);
-            
-            if (this.value) {
-                // Validate minimum amount (R20)
-                if (parseInt(this.value) < 20) {
-                    this.value = 20;
-                }
-                // Points = Amount (1:1 ratio)
-                const points = Math.floor(this.value);
-                updateAmountDisplay(this.value, points);
-            }
-        });
-    }
-
-    // Initialize with default value
-    const checkedRadio = document.querySelector('input[name="amount"]:checked');
-    if (checkedRadio) {
-        updateAmountDisplay(checkedRadio.value, checkedRadio.dataset.points);
-    }
+  document.getElementById("currentBalance").textContent = formatPoints(readAccount().balance);
+  refreshSummary();
 }
 
-function updateAmountDisplay(amount, points) {
-    const amountDisplay = document.getElementById('amountDisplay');
-    const pointsDisplay = document.getElementById('pointsDisplay');
-    const confirmAmount = document.getElementById('confirmAmount');
-    const confirmPoints = document.getElementById('confirmPoints');
+function initialiseDashboard() {
+  const balanceElement = document.getElementById("dashboardBalance");
+  if (!balanceElement) return;
 
-    if (amountDisplay) {
-        amountDisplay.textContent = `R ${parseFloat(amount).toFixed(2)}`;
-    }
-    if (pointsDisplay) {
-        pointsDisplay.textContent = `${parseInt(points).toLocaleString()} pts`;
-    }
-    if (confirmAmount) {
-        confirmAmount.textContent = `R ${parseFloat(amount).toFixed(2)}`;
-    }
-    if (confirmPoints) {
-        confirmPoints.textContent = `${parseInt(points).toLocaleString()} pts`;
-    }
-}
+  const account = readAccount();
+  balanceElement.textContent = formatPoints(account.balance);
 
-// ============================================
-// Payment Method Handling
-// ============================================
+  const latest = account.transactions[0];
+  const latestRefill = document.getElementById("latestRefill");
+  const latestDetail = document.getElementById("latestRefillDetail");
+  if (latest) {
+    latestRefill.textContent = formatCurrency(latest.amount);
+    latestDetail.textContent = `${formatPoints(latest.points)} added on ${new Date(latest.date).toLocaleDateString("en-ZA")}`;
+  }
 
-function setupPaymentMethods() {
-    const cardPaymentRadio = document.getElementById('cardPayment');
-    const cardDetails = document.getElementById('cardDetails');
-    const bankPaymentRadio = document.getElementById('bankPayment');
-    const mobilePaymentRadio = document.getElementById('mobilePayment');
-    const paymentMethodSelects = document.querySelectorAll('input[name="paymentMethod"]');
-
-    if (!paymentMethodSelects.length) return; // Not on refill page
-
-    paymentMethodSelects.forEach(radio => {
-        radio.addEventListener('change', function() {
-            const method = this.value;
-            const confirmMethod = document.getElementById('confirmMethod');
-
-            // Hide card details by default
-            if (cardDetails) {
-                cardDetails.style.display = this.id === 'cardPayment' ? 'block' : 'none';
-            }
-
-            // Update confirmation modal
-            if (confirmMethod) {
-                const methodText = {
-                    'card': 'Debit/Credit Card',
-                    'bank': 'Bank Transfer',
-                    'mobile': 'Mobile Money'
-                };
-                confirmMethod.textContent = methodText[method];
-            }
-        });
+  const list = document.getElementById("transactionList");
+  const empty = document.getElementById("emptyTransactions");
+  if (!account.transactions.length) {
+    empty.classList.remove("d-none");
+  } else {
+    account.transactions.forEach((transaction) => {
+      const row = document.createElement("tr");
+      const values = [
+        new Date(transaction.date).toLocaleDateString("en-ZA"),
+        formatCurrency(transaction.amount),
+        `+${formatPoints(transaction.points)}`,
+        transaction.method,
+        transaction.reference
+      ];
+      values.forEach((value) => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+      list.appendChild(row);
     });
+  }
 
-    // Initialize card details visibility
-    if (cardPaymentRadio && cardPaymentRadio.checked && cardDetails) {
-        cardDetails.style.display = 'block';
-    }
+  document.getElementById("resetDemo").addEventListener("click", () => {
+    if (!window.confirm("Reset this browser's demo balance and refill history?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    window.location.reload();
+  });
 }
-
-// ============================================
-// Navigation
-// ============================================
-
-function setupNavigation() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-            link.classList.add('active');
-        }
-    });
-}
-
-// ============================================
-// Dynamic Content Updates
-// ============================================
-
-function setupDynamicContent() {
-    // Update last updated timestamp
-    updateLastUpdated();
-    
-    // Format currency values
-    formatCurrency();
-    
-    // Generate transaction ID
-    if (document.getElementById('transId')) {
-        document.getElementById('transId').textContent = generateTransactionId();
-    }
-}
-
-function updateLastUpdated() {
-    const timestamp = document.querySelector('[data-timestamp]');
-    if (timestamp) {
-        const now = new Date();
-        timestamp.textContent = now.toLocaleTimeString();
-    }
-}
-
-function formatCurrency() {
-    const currencyElements = document.querySelectorAll('[data-currency]');
-    currencyElements.forEach(element => {
-        const value = parseFloat(element.dataset.currency);
-        element.textContent = new Intl.NumberFormat('en-ZA', {
-            style: 'currency',
-            currency: 'ZAR'
-        }).format(value);
-    });
-}
-
-function generateTransactionId() {
-    const timestamp = Date.now().toString(36).toUpperCase();
-    const random = Math.random().toString(36).substr(2, 5).toUpperCase();
-    return `#TRX${timestamp}${random}`;
-}
-
-// ============================================
-// Form Validation
-// ============================================
-
-function validateCardForm() {
-    const cardNumber = document.querySelector('input[placeholder="1234 5678 9012 3456"]');
-    const cardholderName = document.querySelector('input[placeholder="John Doe"]');
-    const expiry = document.querySelector('input[placeholder="MM/YY"]');
-    const cvv = document.querySelector('input[placeholder="123"]');
-
-    if (!cardNumber || !cardholderName || !expiry || !cvv) {
-        return true; // Not on card payment page
-    }
-
-    let isValid = true;
-    const errors = [];
-
-    // Validate cardholder name
-    if (!cardholderName.value || cardholderName.value.length < 3) {
-        errors.push('Please enter a valid cardholder name');
-        isValid = false;
-    }
-
-    // Validate card number (basic)
-    const cardNum = cardNumber.value.replace(/\s/g, '');
-    if (!/^\d{13,19}$/.test(cardNum)) {
-        errors.push('Please enter a valid card number');
-        isValid = false;
-    }
-
-    // Validate expiry date
-    if (!/^\d{2}\/\d{2}$/.test(expiry.value)) {
-        errors.push('Please enter expiry date in MM/YY format');
-        isValid = false;
-    }
-
-    // Validate CVV
-    if (!/^\d{3,4}$/.test(cvv.value)) {
-        errors.push('Please enter a valid CVV');
-        isValid = false;
-    }
-
-    if (!isValid) {
-        showValidationError(errors);
-    }
-
-    return isValid;
-}
-
-function showValidationError(errors) {
-    const errorMessage = errors.join('\n');
-    alert('Please correct the following errors:\n\n' + errorMessage);
-}
-
-// ============================================
-// Card Number Formatting
-// ============================================
-
-function formatCardNumber(input) {
-    if (!input) return;
-    
-    input.addEventListener('input', function() {
-        let value = this.value.replace(/\s/g, '');
-        let formattedValue = '';
-        
-        for (let i = 0; i < value.length; i++) {
-            if (i > 0 && i % 4 === 0) {
-                formattedValue += ' ';
-            }
-            formattedValue += value[i];
-        }
-        
-        this.value = formattedValue;
-    });
-}
-
-// ============================================
-// Modal Helpers
-// ============================================
-
-function handleConfirmPayment() {
-    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-    
-    if (!paymentMethod) {
-        alert('Please select a payment method');
-        return false;
-    }
-
-    if (paymentMethod.value === 'card') {
-        return validateCardForm();
-    }
-
-    return true;
-}
-
-// ============================================
-// Utility Functions
-// ============================================
-
-function formatPhoneNumber(input) {
-    if (!input) return;
-    
-    input.addEventListener('input', function() {
-        let value = this.value.replace(/\D/g, '');
-        
-        if (value.length >= 10) {
-            this.value = '+27 ' + value.slice(1).replace(/(\d{2})(\d{3})(\d{4})/, '$1 $2 $3');
-        }
-    });
-}
-
-// ============================================
-// Animation Helpers
-// ============================================
-
-function animateValueChange(element, startValue, endValue, duration = 1000) {
-    const startNum = parseInt(startValue.replace(/[^0-9]/g, ''));
-    const endNum = parseInt(endValue.replace(/[^0-9]/g, ''));
-    const range = endNum - startNum;
-    const increment = range / (duration / 16);
-    let current = startNum;
-    let start = null;
-
-    function update(timestamp) {
-        if (!start) start = timestamp;
-        const elapsed = timestamp - start;
-        const progress = Math.min(elapsed / duration, 1);
-        current = Math.floor(startNum + range * progress);
-
-        element.textContent = current.toLocaleString() + ' pts';
-
-        if (progress < 1) {
-            requestAnimationFrame(update);
-        }
-    }
-
-    requestAnimationFrame(update);
-}
-
-// ============================================
-// Logging & Debugging
-// ============================================
-
-function logTransaction(data) {
-    console.log('Transaction Initiated:', {
-        timestamp: new Date(),
-        amount: data.amount,
-        points: data.points,
-        method: data.method,
-        status: 'pending',
-        conversionRate: '1 Rand = 1 Point'
-    });
-}
-
-// ============================================
-// Error Handling
-// ============================================
-
-window.addEventListener('error', function(e) {
-    console.error('Application Error:', e.error);
-    // In production, send error to server
-});
-
-// ============================================
-// Export Functions for Global Use
-// ============================================
-
-window.handleConfirmPayment = handleConfirmPayment;
-window.formatCardNumber = formatCardNumber;
-window.formatPhoneNumber = formatPhoneNumber;
