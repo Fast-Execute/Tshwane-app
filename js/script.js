@@ -1,8 +1,11 @@
 const STORAGE_KEY = "tshwaneBusPointsDemo";
 const POINTS_PER_RAND = 10;
 const DEFAULT_BALANCE = 2450;
+const AUTH_SESSION_KEY = "tshwaneBusPointsDemoSession";
 
 document.addEventListener("DOMContentLoaded", () => {
+  initialiseAuthPages();
+  protectRiderPages();
   initialiseRefillPage();
   initialiseDashboard();
   enableAccessibleNavigation();
@@ -170,13 +173,94 @@ function enableAccessibleNavigation() {
     }
   }
 
+  const navigation = document.querySelector(".navbar-nav");
+  if (navigation && !document.querySelector("[data-auth-navigation]")) {
+    const item = document.createElement("li");
+    item.className = "nav-item";
+    item.dataset.authNavigation = "true";
+    const link = document.createElement("a");
+    link.className = "nav-link";
+    if (hasDemoSession()) {
+      link.href = "#";
+      link.textContent = "Sign out";
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        sessionStorage.removeItem(AUTH_SESSION_KEY);
+        localStorage.removeItem(STORAGE_KEY);
+        window.location.assign("index.html");
+      });
+    } else {
+      link.href = "login.html";
+      link.textContent = "Sign in";
+    }
+    item.appendChild(link);
+    navigation.appendChild(item);
+  }
+
   const collapse = document.querySelector(".navbar-collapse");
   if (!collapse || !window.bootstrap) return;
-
   document.querySelectorAll(".navbar-collapse .nav-link").forEach((link) => {
     link.addEventListener("click", () => {
       if (!collapse.classList.contains("show")) return;
       bootstrap.Collapse.getOrCreateInstance(collapse).hide();
     });
   });
+}
+
+function hasDemoSession() {
+  return sessionStorage.getItem(AUTH_SESSION_KEY) === "active";
+}
+
+function startDemoSession() {
+  sessionStorage.setItem(AUTH_SESSION_KEY, "active");
+}
+
+function protectRiderPages() {
+  const protectedPages = ["dashboard.html", "PointsRefill.html"];
+  const currentPage = window.location.pathname.split("/").pop();
+  if (protectedPages.includes(currentPage) && !hasDemoSession()) {
+    window.location.replace("login.html");
+  }
+}
+
+function initialiseAuthPages() {
+  const registerForm = document.getElementById("registerForm");
+  if (registerForm) {
+    registerForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const password = document.getElementById("registerPassword");
+      const confirmation = document.getElementById("confirmPassword");
+      const error = document.getElementById("registerError");
+
+      if (!registerForm.checkValidity()) {
+        registerForm.classList.add("was-validated");
+        return;
+      }
+      if (password.value !== confirmation.value) {
+        error.textContent = "Passwords must match.";
+        error.classList.remove("d-none");
+        confirmation.focus();
+        return;
+      }
+
+      // The demo deliberately does not retain credentials or personal details.
+      startDemoSession();
+      window.location.assign("dashboard.html");
+    });
+  }
+
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!loginForm.checkValidity()) {
+        loginForm.classList.add("was-validated");
+        return;
+      }
+
+      // Supabase Auth replaces this demo-only path in production.
+      startDemoSession();
+      window.location.assign("dashboard.html");
+    });
+  }
 }
