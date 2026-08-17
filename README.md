@@ -1,5 +1,8 @@
 # Tshwane Bus Fare Points Refill App
 
+> **Project completion: 20% — Prototype in progress**  
+> See [PROJECT_STATUS.md](PROJECT_STATUS.md) for the weighted roadmap, active work, and tracking rules.
+
 A dynamic solution for streamlining bus fare point refilling services and fostering local community connections in Tshwane (Pretoria), South Africa.
 
 ## 🚌 Overview
@@ -34,6 +37,7 @@ Tshwane-app/
 ├── js/
 │   └── script.js        # JavaScript functionality
 ├── images/              # Image assets
+├── PROJECT_STATUS.md    # Roadmap and percentage tracking
 └── README.md            # This file
 ```
 
@@ -59,6 +63,7 @@ Tshwane-app/
 ## 📱 Pages
 
 ### Home (index.html)
+
 Landing page with:
 - App overview and benefits
 - Quick start guide
@@ -66,6 +71,7 @@ Landing page with:
 - How it works section
 
 ### Dashboard (dashboard.html)
+
 User account page with:
 - Current balance display
 - Recent transactions
@@ -74,6 +80,7 @@ User account page with:
 - Transaction history
 
 ### Points Refill (PointsRefill.html)
+
 Refill management page with:
 - Refill amount selection
 - Payment method options
@@ -91,7 +98,7 @@ Refill management page with:
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please open an issue for planned work and use [PROJECT_STATUS.md](PROJECT_STATUS.md) to understand the delivery roadmap.
 
 ## 📄 License
 
