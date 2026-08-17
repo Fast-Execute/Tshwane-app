@@ -1,9 +1,9 @@
 # Project Status — Tshwane Bus Fare Points Refill App
 
-> **Overall completion: 20%**
+> **Overall completion: 50%**
 >
 > Last reviewed: 17 August 2026  
-> Status: **Prototype in progress**  
+> Status: **Interactive demo in progress**  
 > Next milestone: establish the shared front-end foundation.
 
 ## What the percentage means
@@ -14,19 +14,19 @@ This percentage measures delivery against the agreed first usable product—not 
 | --- | ---: | ---: | ---: |
 | Visual prototype and page structure | 20% | 100% | 20% |
 | Front-end foundation and accessibility | 20% | 0% | 0% |
-| Core dashboard and refill experience | 30% | 0% | 0% |
+| Core dashboard and refill experience | 30% | 100% | 30% |
 | Authentication, payments, and data design | 20% | 0% | 0% |
 | Testing, documentation, and release | 10% | 0% | 0% |
-| **Total** | **100%** |  | **20%** |
+| **Total** | **100%** |  | **50%** |
 
-The existing home, dashboard, refill, and bus-stop pages provide the completed visual-prototype portion. They are not counted as a production-ready payment or account service until the related functionality has been built and verified.
+The dashboard and refill journey now form an interactive browser-only demonstration: refills calculate correctly, validate rider input, update the available balance, and create a transaction record in local storage. It does **not** collect card details, authenticate users, or process real payments.
 
 ## Active roadmap
 
 | Priority | Work | Weight | Tracking issue |
 | ---: | --- | ---: | --- |
 | 1 | Shared styles, scripts, responsive navigation, and accessibility foundation | 20% | [#1](https://github.com/Fast-Execute/Tshwane-app/issues/1) |
-| 2 | Working dashboard and fare-points refill journey | 30% | [#2](https://github.com/Fast-Execute/Tshwane-app/issues/2) |
+| 2 | Working dashboard and fare-points refill journey | 30% | [#2](https://github.com/Fast-Execute/Tshwane-app/issues/2) — completed |
 | 3 | Authentication, payment, privacy, and API design | 20% | [#3](https://github.com/Fast-Execute/Tshwane-app/issues/3) |
 | 4 | Testing, release documentation, and deployment | 10% | [#4](https://github.com/Fast-Execute/Tshwane-app/issues/4) |
 
@@ -40,4 +40,4 @@ The existing home, dashboard, refill, and bus-stop pages provide the completed v
 
 ## Current focus
 
-Complete [#1](https://github.com/Fast-Execute/Tshwane-app/issues/1) before starting functional payment or account integrations. That foundation keeps the existing prototype maintainable as it becomes a real product.
+Complete [#1](https://github.com/Fast-Execute/Tshwane-app/issues/1) before starting real payment or account integrations. That foundation keeps the demonstration maintainable as it becomes a real product.
