@@ -1,9 +1,9 @@
 # Project Status — Tshwane Bus Fare Points Refill App
 
-> **Overall completion: 74%**
+> **Overall completion: 77%**
 >
 > Last reviewed: 17 August 2026  
-> Status: **Interactive demo with secure data design in progress**  
+> Status: **Interactive demo with deployable authentication design in progress**  
 > Next milestone: establish the shared front-end foundation.
 
 ## What the percentage means
@@ -15,15 +15,15 @@ This percentage measures delivery against the agreed first usable product—not 
 | Visual prototype and page structure | 20% | 100% | 20% |
 | Front-end foundation and accessibility | 20% | 60% | 12% |
 | Core dashboard and refill experience | 30% | 100% | 30% |
-| Authentication, payments, and data design | 20% | 60% | 12% |
+| Authentication, payments, and data design | 20% | 75% | 15% |
 | Testing, documentation, and release | 10% | 0% | 0% |
-| **Total** | **100%** |  | **74%** |
+| **Total** | **100%** |  | **77%** |
 
 The dashboard and refill journey now form an interactive browser-only demonstration: refills calculate correctly, validate rider input, update the available balance, and create a transaction record in local storage. It does **not** collect card details, authenticate users, or process real payments.
 
 The shared accessibility foundation is partially complete: keyboard-visible focus, reduced-motion support, skip links, clearer navigation labels, and a consistent bus-stop link are in place. Mobile and assistive-technology verification remains before that work area can be closed.
 
-The secure data design is partially complete: a PostgreSQL schema, row-level access rules, append-only points ledger, data-security standard, and API contract are documented in the database directory. Provider selection, sandbox integration, deployment, and security testing remain before real rider data can be accepted.
+The secure data design is partially complete: a PostgreSQL schema, row-level access rules, append-only points ledger, data-security standard, and API contract are documented in the database directory. A Supabase Auth/RLS migration is now included. Payment-provider selection, sandbox integration, deployment, and security testing remain before real rider data can be accepted.
 
 ## Active roadmap
 
