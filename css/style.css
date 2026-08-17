@@ -411,3 +411,54 @@ button {
         border: 1px solid var(--border-color);
     }
 }
+
+
+/* ============================================
+   Inclusive navigation and motion preferences
+   ============================================ */
+
+.skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 2000;
+    padding: 0.7rem 1rem;
+    background: #ffffff;
+    color: var(--green-dark);
+    border: 2px solid var(--green-dark);
+    border-radius: 0.4rem;
+    font-weight: 700;
+    transform: translateY(-200%);
+    transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+:focus-visible {
+    outline: 3px solid #145a32;
+    outline-offset: 3px;
+}
+
+.btn-check:focus-visible + .btn,
+.navbar-toggler:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
+    box-shadow: none;
+}
+
+.navbar-toggler {
+    border-width: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
