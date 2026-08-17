@@ -5,6 +5,7 @@ const DEFAULT_BALANCE = 2450;
 document.addEventListener("DOMContentLoaded", () => {
   initialiseRefillPage();
   initialiseDashboard();
+  enableAccessibleNavigation();
 });
 
 function readAccount() {
@@ -153,5 +154,29 @@ function initialiseDashboard() {
     if (!window.confirm("Reset this browser's demo balance and refill history?")) return;
     localStorage.removeItem(STORAGE_KEY);
     window.location.reload();
+  });
+}
+
+function enableAccessibleNavigation() {
+  const main = document.querySelector("main");
+  if (main) {
+    if (!main.id) main.id = "main-content";
+    if (!document.querySelector(".skip-link")) {
+      const skipLink = document.createElement("a");
+      skipLink.className = "skip-link";
+      skipLink.href = `#${main.id}`;
+      skipLink.textContent = "Skip to main content";
+      document.body.insertAdjacentElement("afterbegin", skipLink);
+    }
+  }
+
+  const collapse = document.querySelector(".navbar-collapse");
+  if (!collapse || !window.bootstrap) return;
+
+  document.querySelectorAll(".navbar-collapse .nav-link").forEach((link) => {
+    link.addEventListener("click", () => {
+      if (!collapse.classList.contains("show")) return;
+      bootstrap.Collapse.getOrCreateInstance(collapse).hide();
+    });
   });
 }
