@@ -9,8 +9,9 @@ Apply in this order:
 1. `database/schema.sql`
 2. `database/supabase/001_auth_rls.sql`
 3. `database/supabase/002_ozow_credit.sql`
+4. `database/supabase/003_ozow_full_webhook_reference.sql`
 
-The last migration adds server-only, idempotent settlement functions. A duplicate webhook returns the existing paid order rather than crediting points twice.
+The settlement functions are server-only and idempotent: a duplicate webhook returns the existing paid order rather than crediting points twice. The final migration accepts both the merchant reference supplied by a full Ozow webhook and Ozow's transaction ID from a thin webhook.
 
 ## 2. Configure public browser values
 
