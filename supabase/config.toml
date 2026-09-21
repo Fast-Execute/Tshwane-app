@@ -1,0 +1,5 @@
+[functions.rider-api]
+verify_jwt = false
+
+[functions.ozow-webhook]
+verify_jwt = false
