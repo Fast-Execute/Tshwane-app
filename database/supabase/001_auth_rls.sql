@@ -31,10 +31,14 @@ CREATE TRIGGER on_auth_user_created
 -- Existing RLS policies use app_current_rider_id(). Replacing this helper
 -- connects them to the authenticated Supabase user instead of a client-set
 -- request value. auth.uid() is null for unauthenticated requests.
+-- SECURITY DEFINER is required: the riders RLS policy calls this function, and
+-- the function reads riders. Without it the policy recurses until the stack
+-- limit is hit. The function only ever returns the caller's own rider id.
 CREATE OR REPLACE FUNCTION public.app_current_rider_id()
 RETURNS UUID
 LANGUAGE SQL
 STABLE
+SECURITY DEFINER
 SET search_path = public
 AS $$
   SELECT id

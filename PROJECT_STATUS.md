@@ -2,9 +2,9 @@
 
 > **Overall completion: 77%**
 >
-> Last reviewed: 17 August 2026  
-> Status: **Interactive demo with deployable authentication design in progress**  
-> Next milestone: establish the shared front-end foundation.
+> Last reviewed: 26 October 2026  
+> Status: **Interactive demo; backend written and database migrations verified locally, but not yet deployed or connected to the front end**  
+> Next milestone: link transit cards, then connect the front end to Supabase Auth and `rider-api`.
 
 ## What the percentage means
 
@@ -45,3 +45,15 @@ The secure data design is partially complete: a PostgreSQL schema, row-level acc
 ## Current focus
 
 Complete [#1](https://github.com/Fast-Execute/Tshwane-app/issues/1) before starting real payment or account integrations. That foundation keeps the demonstration maintainable as it becomes a real product.
+
+## Known gaps (as of 26 October 2026)
+
+- The front end does not call Supabase or `rider-api`; sign-in and refills are browser-only demos and `js/app-config.js` is empty.
+- No transit-card linking flow exists. `POST /refill-orders` returns 409 until a rider has an active card and points account, so no real refill can complete.
+- `PointsRefill.html` does not read the `?order=` return parameter or show order status; `GET /refill-orders/{id}` is not implemented.
+- Backend deployment (Supabase project, Ozow staging, secrets) has not been done, and there are no automated tests or CI.
+- Bus-stop coordinates and ratings are hand-entered sample data and should be verified before release.
+
+## Verified on 26 October 2026
+
+`schema.sql` and migrations 001–003 apply cleanly in order on PostgreSQL 16 (with a mock Supabase `auth` schema). Two-rider RLS tests passed: each rider sees only their own rows, anonymous callers see nothing, riders cannot write balances or the ledger or call the settlement functions, and a duplicate Ozow webhook credits points once. This is not a substitute for testing on a real Supabase project.

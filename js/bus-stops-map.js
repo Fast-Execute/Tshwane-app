@@ -467,7 +467,7 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
 function openDirectionsModal(lat, lng, stopName) {
     const buttonsContainer = document.getElementById('directionsButtons');
     
-    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&destination_place_id=${stopName}`;
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     const appleMapsUrl = `https://maps.apple.com/?daddr=${lat},${lng}`;
     const wazeUrl = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
     

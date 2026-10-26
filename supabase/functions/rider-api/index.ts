@@ -100,7 +100,7 @@ Deno.serve(async (request) => {
     const idempotencyKey = request.headers.get("idempotency-key");
     const body = await request.json().catch(() => null) as { amountCents?: number } | null;
     const amountCents = body?.amountCents;
-    if (!idempotencyKey || !/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(idempotencyKey)) {
+    if (!idempotencyKey || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idempotencyKey)) {
       return response({ error: "A UUID Idempotency-Key is required" }, 400);
     }
     if (!Number.isInteger(amountCents) || amountCents < 1000 || amountCents > 100000) {
@@ -130,6 +130,11 @@ Deno.serve(async (request) => {
       .eq("idempotency_key", idempotencyKey)
       .maybeSingle();
     if (existing?.provider_reference) return response({ orderId: existing.id, status: existing.status }, 200);
+    if (existing) {
+      // An earlier attempt with this key never reached the payment provider.
+      // Do not insert again (the key is unique); ask the client for a fresh key.
+      return response({ error: "A previous attempt with this key did not complete. Retry with a new Idempotency-Key." }, 409);
+    }
 
     const { data: order, error: orderError } = await admin
       .from("refill_orders")

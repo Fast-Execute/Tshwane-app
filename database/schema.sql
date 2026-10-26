@@ -124,14 +124,14 @@ $$;
 CREATE OR REPLACE FUNCTION prevent_auth_subject_change()
 RETURNS TRIGGER
 LANGUAGE plpgsql
-AS $
+AS $$
 BEGIN
   IF NEW.auth_subject <> OLD.auth_subject THEN
     RAISE EXCEPTION 'auth_subject cannot be changed';
   END IF;
   RETURN NEW;
 END;
-$;
+$$;
 
 CREATE TRIGGER riders_touch_updated_at
 BEFORE UPDATE ON riders
