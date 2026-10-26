@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Authorised staff dashboard for Tshwane municipal service cases and notices.">
+  <title>Staff Admin | Tshwane Services</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-green-primary">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-buildings"></i> Tshwane Services</a>
+      <div class="navbar-nav ms-auto flex-row gap-3">
+        <a class="nav-link" href="municipal-services.html">Resident portal</a>
+        <button class="btn btn-outline-light btn-sm align-self-center" id="signOutButton" type="button">Sign out</button>
+      </div>
+    </div>
+  </nav>
+  <main id="main-content" class="container py-4 py-lg-5">
+    <div class="mb-4">
+      <p class="text-uppercase fw-semibold text-success small mb-1">Restricted staff area</p>
+      <h1 class="display-6 fw-bold text-green-primary">Municipal service administration</h1>
+      <p class="text-muted mb-0">Review incoming reports, update case progress, and publish service notices. Access is enforced by Supabase Auth and database RLS.</p>
+    </div>
+    <div id="adminAlert" class="alert alert-info" role="status">Verifying staff access…</div>
+    <div id="adminApp" class="d-none">
+      <div class="row g-3 mb-4" id="summaryCards">
+        <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><p class="text-muted mb-1">Open cases</p><p class="h2 mb-0" id="openCount">—</p></div></div></div>
+        <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><p class="text-muted mb-1">High priority</p><p class="h2 mb-0" id="highCount">—</p></div></div></div>
+        <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><p class="text-muted mb-1">Active notices</p><p class="h2 mb-0" id="noticeCount">—</p></div></div></div>
+      </div>
+      <section class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3 p-lg-4">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div><h2 class="h4 text-green-primary mb-1">Fault and service cases</h2><p class="small text-muted mb-0">Demo cases are labelled. Only real reports may be assigned or updated as real work.</p></div>
+            <button class="btn btn-outline-success btn-sm" id="refreshCases" type="button"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-md-5"><label for="caseSearch" class="form-label">Search cases</label><input id="caseSearch" class="form-control" placeholder="Reference, area, or description"></div>
+            <div class="col-md-3"><label for="statusFilter" class="form-label">Status</label><select id="statusFilter" class="form-select"><option value="">All statuses</option><option value="submitted">Submitted</option><option value="acknowledged">Acknowledged</option><option value="assigned">Assigned</option><option value="in_progress">In progress</option><option value="awaiting_parts">Awaiting parts</option><option value="resolved">Resolved</option><option value="closed">Closed</option><option value="rejected">Rejected</option></select></div>
+            <div class="col-md-4"><label for="demoFilter" class="form-label">Record type</label><select id="demoFilter" class="form-select"><option value="all">Real and demo</option><option value="real">Real reports only</option><option value="demo">Demo records only</option></select></div>
+          </div>
+          <div id="caseList" class="d-grid gap-3"><p class="text-muted">Loading cases…</p></div>
+        </div>
+      </section>
+      <section class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3 p-lg-4">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div><h2 class="h4 text-green-primary mb-1">Service notices</h2><p class="small text-muted mb-0">Publish only verified information. Demo notices must remain clearly labelled.</p></div>
+            <button class="btn btn-outline-success btn-sm" id="refreshNotices" type="button">Refresh notices</button>
+          </div>
+          <div id="noticeList" class="d-grid gap-3 mb-4"><p class="text-muted">Loading notices…</p></div>
+          <hr>
+          <h3 class="h5 text-green-primary">Create a notice</h3>
+          <form id="noticeForm" class="row g-3">
+            <div class="col-md-8"><label class="form-label" for="noticeTitle">Title</label><input class="form-control" id="noticeTitle" maxlength="160" required></div>
+            <div class="col-md-4"><label class="form-label" for="noticeType">Notice type</label><select class="form-select" id="noticeType" required><option value="outage">Outage</option><option value="planned_work">Planned work</option><option value="refuse_schedule">Refuse schedule</option><option value="general">General</option></select></div>
+            <div class="col-md-6"><label class="form-label" for="noticeCategory">Service category</label><select class="form-select" id="noticeCategory" required></select></div>
+            <div class="col-md-6"><label class="form-label" for="noticeArea">Area (optional)</label><select class="form-select" id="noticeArea"><option value="">All areas</option></select></div>
+            <div class="col-12"><label class="form-label" for="noticeDetails">Details</label><textarea class="form-control" id="noticeDetails" rows="3" minlength="10" maxlength="4000" required></textarea></div>
+            <div class="col-md-6"><label class="form-label" for="noticeStarts">Start time (optional)</label><input class="form-control" id="noticeStarts" type="datetime-local"></div>
+            <div class="col-md-6"><label class="form-label" for="noticeEnds">Expected end (optional)</label><input class="form-control" id="noticeEnds" type="datetime-local"></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" id="noticeDemo" type="checkbox"><label class="form-check-label" for="noticeDemo">This is sample/demo information (keep clearly labelled)</label></div></div>
+            <div class="col-12 d-flex gap-2 flex-wrap"><button class="btn btn-outline-success" type="submit" name="publish" value="draft">Save draft</button><button class="btn btn-green" type="submit" name="publish" value="publish">Publish notice</button></div>
+            <p id="noticeMessage" class="small mb-0" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="bg-green-primary text-white py-3"><div class="container"><small>Restricted demonstration dashboard. Staff permissions must be granted by a trusted administrator, never through a public registration form.</small></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/app-config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
