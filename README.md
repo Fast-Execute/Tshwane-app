@@ -17,6 +17,7 @@ The Tshwane Bus Fare Points Refill App is a web-based platform that enables user
 - **Secure Transactions**: Safe payment processing
 - **Mobile Responsive**: Fully responsive design for all devices
 - **Community Focused**: Supporting local transportation needs
+- **Municipal Services (demo module)**: View clearly labelled sample notices, submit non-emergency fault reports, and track authenticated resident cases
 
 ## 🎨 Design
 
