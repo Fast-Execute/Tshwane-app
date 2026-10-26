@@ -1,0 +1,35 @@
+-- Tshwane municipal services demo schema.
+-- Applied to Supabase project ctadyhreitaekhthqizt on 2026-10-26.
+-- This file documents the schema deployed for the municipal-services module.
+-- It is intentionally not a one-click replay script: the live project already
+-- contains these objects. Review before applying to a different project.
+--
+-- Tables:
+--   profiles (id -> auth.users)
+--   service_categories
+--   service_areas
+--   service_requests
+--   service_request_updates
+--   service_notices
+--
+-- The deployed migration also creates:
+--   public.tshwane_set_updated_at()
+--   public.tshwane_handle_new_user() + auth.users insert trigger
+--   RLS policies for resident-owned reports, public reference data and notices,
+--   staff/admin writes based on trusted JWT app_metadata.role,
+--   private storage bucket tshwane-fault-attachments (10 MiB limit),
+--   demo categories, areas, service requests, updates and notices.
+--
+-- IMPORTANT SECURITY CONTRACT:
+-- 1. Never grant staff roles through user-editable user_metadata or profiles.
+--    Assign app_metadata.role only from a trusted administrative process.
+-- 2. Do not expose the Supabase service-role key in the browser.
+-- 3. All demo rows are explicitly marked is_demo=true and notice text states
+--    that sample outages are not verified live municipal information.
+-- 4. Do not delete demo data or modify unrelated objects in production.
+--
+-- The live SQL migration is tracked in Supabase migration history as:
+--   20261026084418_tshwane_municipal_services_demo_schema
+--   20261026084502_tshwane_rls_performance_indexes
+--
+-- See database/SUPABASE_DEPLOYMENT.md for configuration and release checks.
