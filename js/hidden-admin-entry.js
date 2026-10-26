@@ -30,6 +30,6 @@
 
   target.addEventListener("click", registerTap);
   target.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") registerTap(event);
+    if (event.key === " ") registerTap(event);
   });
 })();
