@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Report Tshwane municipal service faults and follow case progress.">
+  <title>Municipal Services | Tshwane</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-green-primary">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-buildings"></i> Tshwane Services</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="municipal-services.html">Municipal services</a></li>
+          <li class="nav-item"><a class="nav-link" href="bus-stops.html">Bus stops</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <header class="bg-green-light py-5">
+      <div class="container">
+        <p class="text-uppercase text-green-primary fw-semibold mb-2">Tshwane community portal</p>
+        <h1 class="display-5 fw-bold text-green-primary">Municipal services</h1>
+        <p class="lead mb-0">Report a service fault, follow your case, and check published service notices.</p>
+        <div class="alert alert-warning mt-4 mb-0" role="note"><strong>Demo notice:</strong> Sample cases and notices are illustrative only. They are not verified live City of Tshwane outage information.</div>
+      </div>
+    </header>
+
+    <section class="py-4">
+      <div class="container">
+        <div id="connectionAlert" class="alert alert-info" role="status">Connecting to the demo service database…</div>
+        <div class="row g-4">
+          <div class="col-lg-7">
+            <section class="card border-0 shadow-sm h-100">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                  <h2 class="h4 text-green-primary mb-0">Service notices</h2>
+                  <button class="btn btn-outline-success btn-sm" id="refreshNotices" type="button"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                </div>
+                <div id="noticeList" class="d-grid gap-3" aria-live="polite"><p class="text-muted">Loading notices…</p></div>
+              </div>
+            </section>
+          </div>
+          <div class="col-lg-5">
+            <section class="card border-0 shadow-sm">
+              <div class="card-body p-4">
+                <h2 class="h4 text-green-primary">Resident account</h2>
+                <p class="text-muted small">Sign in or create an account to submit faults and see your cases. This uses Supabase Auth, not the older browser-only demo login.</p>
+                <div id="authStatus" class="alert alert-light border small" role="status">Checking session…</div>
+                <form id="authForm" class="d-grid gap-3">
+                  <div><label class="form-label" for="authEmail">Email address</label><input class="form-control" id="authEmail" type="email" autocomplete="email" required></div>
+                  <div><label class="form-label" for="authPassword">Password</label><input class="form-control" id="authPassword" type="password" autocomplete="current-password" minlength="12" required></div>
+                  <div id="authNameWrap" class="d-none"><label class="form-label" for="authName">Preferred name (optional)</label><input class="form-control" id="authName" maxlength="80" autocomplete="name"></div>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-green flex-grow-1" id="signInButton" type="submit">Sign in</button>
+                    <button class="btn btn-outline-success flex-grow-1" id="signUpButton" type="button">Create account</button>
+                  </div>
+                  <button class="btn btn-outline-secondary d-none" id="signOutButton" type="button">Sign out</button>
+                  <p id="authMessage" class="small mb-0" role="status" aria-live="polite"></p>
+                </form>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-4 bg-light">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <section class="card border-0 shadow-sm">
+              <div class="card-body p-4">
+                <h2 class="h4 text-green-primary">Report a fault</h2>
+                <p class="text-muted small">You must be signed in. Do not report an emergency here; contact the relevant emergency service.</p>
+                <form id="faultForm" class="d-grid gap-3">
+                  <div><label class="form-label" for="faultCategory">Service type</label><select id="faultCategory" class="form-select" required><option value="">Loading categories…</option></select></div>
+                  <div><label class="form-label" for="faultArea">Area</label><select id="faultArea" class="form-select" required><option value="">Loading areas…</option></select></div>
+                  <div><label class="form-label" for="faultLocation">Street, landmark or location details</label><input id="faultLocation" class="form-control" maxlength="240" required placeholder="Avoid including private access codes"></div>
+                  <div><label class="form-label" for="faultPriority">Priority</label><select id="faultPriority" class="form-select"><option value="normal">Normal</option><option value="low">Low</option><option value="high">High</option><option value="emergency">Emergency — do not use this form for urgent response</option></select></div>
+                  <div><label class="form-label" for="faultDescription">Describe the issue</label><textarea id="faultDescription" class="form-control" rows="4" minlength="10" maxlength="3000" required placeholder="What happened, and when did you first notice it?"></textarea></div>
+                  <button class="btn btn-green" type="submit" id="submitFault">Submit fault report</button>
+                  <p id="faultMessage" class="small mb-0" role="status" aria-live="polite"></p>
+                </form>
+              </div>
+            </section>
+          </div>
+          <div class="col-lg-6">
+            <section class="card border-0 shadow-sm h-100">
+              <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+                  <h2 class="h4 text-green-primary mb-0">My cases</h2>
+                  <button class="btn btn-outline-success btn-sm" id="refreshCases" type="button">Refresh cases</button>
+                </div>
+                <div id="caseList" aria-live="polite"><p class="text-muted">Sign in to see your reports. Demo cases are labelled separately.</p></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="bg-green-primary text-white py-4 mt-4"><div class="container"><p class="mb-1">Tshwane Municipal Services — demonstration module</p><small>Not an official City of Tshwane service. Demo notices do not represent confirmed outages.</small></div></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/app-config.js"></script>
+  <script src="js/municipal-services.js"></script>
+</body>
+</html>
